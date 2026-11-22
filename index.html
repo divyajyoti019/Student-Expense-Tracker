@@ -68,8 +68,10 @@
     .terminal-title { color: #d6ed9a; font-weight: 750; letter-spacing: .08em; }
     .terminal-sub { color: #8eaa9b; }
     .terminal-rule { margin: 12px 0; border-top: 1px solid #385047; }
-    .terminal-row { display: flex; gap: 14px; }
-    .terminal-row b { width: 22px; color: #9bd2a8; font-weight: 600; }
+    .terminal-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+    .terminal-option { display: flex; gap: 8px; min-width: 0; }
+    .terminal-option b { width: 21px; flex: 0 0 21px; color: #9bd2a8; font-weight: 600; }
+    .terminal-option span { white-space: nowrap; }
     .terminal-hint { margin-top: 13px; color: #f0bc85; }
     .float-note { position: absolute; right: -21px; bottom: -24px; display: flex; align-items: center; gap: 11px; padding: 13px 16px; background: #fff; border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--shadow); font-size: 12px; font-weight: 710; }
     .float-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: var(--green); background: var(--mint); }
@@ -168,7 +170,10 @@
       .hero-grid, .insight-grid, .start-grid { grid-template-columns: 1fr; }
       .hero-grid { gap: 47px; }
       .hero-copy { font-size: 15px; }
-      .terminal-body { padding: 18px; font-size: 11px; }
+      .terminal-body { padding: 18px; font-size: 10px; }
+      .terminal-menu { gap: 3px 10px; }
+      .terminal-option { gap: 5px; }
+      .terminal-option b { width: 18px; flex-basis: 18px; }
       .float-note { right: -5px; bottom: -27px; }
       .fact-row { grid-template-columns: repeat(2, 1fr); }
       .fact { padding: 16px; }
@@ -207,7 +212,7 @@
         <a href="#features">Features</a>
         <a href="#architecture">Architecture</a>
         <a href="#run">Run the project</a>
-        <a class="nav-cta" href="docs/project_report.md">Project report <span aria-hidden="true">↗</span></a>
+        <a class="nav-cta" href="https://github.com/divyajyoti019/Student-Expense-Tracker" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
       </nav>
     </div>
   </header>
@@ -220,9 +225,9 @@
           <h1>Know where your student budget <span>goes.</span></h1>
           <p class="hero-copy">A practical, offline expense and budget tracker built in C. Record everyday spending, keep an eye on monthly limits, and turn saved transactions into useful reports.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="Student-Expense-Tracker.zip" download>
+            <a class="button button-primary" href="https://github.com/divyajyoti019/Student-Expense-Tracker/archive/refs/heads/main.zip">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 16v4h14v-4"/></svg>
-              Download project
+              Download source
             </a>
             <a class="button button-secondary" href="#run">How to run <span aria-hidden="true">↓</span></a>
           </div>
@@ -233,17 +238,25 @@
           <div class="terminal">
             <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-label">expense_tracker</span></div>
             <div class="terminal-body">
-              <div class="terminal-title">STUDENT EXPENSE TRACKER</div>
-              <div class="terminal-sub">SMART STUDENT FINANCE MANAGER</div>
+              <div class="terminal-title">STUDENT EXPENSE &amp; BUDGET TRACKER</div>
+              <div class="terminal-sub">PERSONAL FINANCE MANAGER</div>
               <div class="terminal-rule"></div>
-              <div class="terminal-row"><b>1.</b><span>Dashboard</span></div>
-              <div class="terminal-row"><b>2.</b><span>Add New Expense</span></div>
-              <div class="terminal-row"><b>3.</b><span>View All Expenses</span></div>
-              <div class="terminal-row"><b>4.</b><span>Search Expenses</span></div>
-              <div class="terminal-row"><b>5.</b><span>Update Expense</span></div>
-              <div class="terminal-row"><b>6.</b><span>Delete Expense</span></div>
-              <div class="terminal-row"><b>7.</b><span>Budget Management</span></div>
-              <div class="terminal-row"><b>8.</b><span>Expense Reports</span></div>
+              <div class="terminal-menu">
+                <div class="terminal-option"><b>1</b><span>Dashboard</span></div>
+                <div class="terminal-option"><b>2</b><span>Add expense</span></div>
+                <div class="terminal-option"><b>3</b><span>View expenses</span></div>
+                <div class="terminal-option"><b>4</b><span>Search expenses</span></div>
+                <div class="terminal-option"><b>5</b><span>Update expense</span></div>
+                <div class="terminal-option"><b>6</b><span>Delete expense</span></div>
+                <div class="terminal-option"><b>7</b><span>Budgets</span></div>
+                <div class="terminal-option"><b>8</b><span>Reports</span></div>
+                <div class="terminal-option"><b>9</b><span>Sort &amp; filter</span></div>
+                <div class="terminal-option"><b>10</b><span>Categories</span></div>
+                <div class="terminal-option"><b>11</b><span>Export report</span></div>
+                <div class="terminal-option"><b>12</b><span>About</span></div>
+                <div class="terminal-option"><b>13</b><span>Help</span></div>
+                <div class="terminal-option"><b>0</b><span>Exit</span></div>
+              </div>
               <div class="terminal-hint">Enter your choice:</div>
             </div>
           </div>
@@ -347,15 +360,16 @@
         <div>
           <div class="eyebrow">Get it running</div>
           <h2>Build it in a few commands.</h2>
-          <p>Download and extract the project, open a terminal in its folder, then compile and launch the menu-driven C application.</p>
+          <p>Clone the private GitHub repository, open a terminal in the project folder, then compile and launch the menu-driven C application. You need access to the repository to clone or download its source.</p>
           <div class="requirements"><strong>Requirements</strong><br>GCC with C11 support and GNU Make (or a compatible toolchain).</div>
         </div>
         <div class="steps">
           <div class="steps-title">macOS / Linux / compatible terminal</div>
-          <div class="step"><span class="step-number">1</span><div><p>Open the extracted project folder.</p><code>cd Student-Expense-Tracker</code></div></div>
-          <div class="step"><span class="step-number">2</span><div><p>Compile the C source files.</p><code>make</code></div></div>
-          <div class="step"><span class="step-number">3</span><div><p>Start the expense tracker.</p><code>make run</code></div></div>
-          <div class="step"><span class="step-number">4</span><div><p>Run the included automated checks when needed.</p><code>make test</code></div></div>
+          <div class="step"><span class="step-number">1</span><div><p>Clone the private repository.</p><code>git clone https://github.com/divyajyoti019/Student-Expense-Tracker.git</code></div></div>
+          <div class="step"><span class="step-number">2</span><div><p>Open the project folder.</p><code>cd Student-Expense-Tracker</code></div></div>
+          <div class="step"><span class="step-number">3</span><div><p>Compile the C source files.</p><code>make</code></div></div>
+          <div class="step"><span class="step-number">4</span><div><p>Start the expense tracker.</p><code>make run</code></div></div>
+          <div class="step"><span class="step-number">5</span><div><p>Run the included automated checks when needed.</p><code>make test</code></div></div>
         </div>
       </div>
     </section>
@@ -367,9 +381,9 @@
           <h2 id="resources-title">Continue with the code and documentation.</h2>
         </div>
         <div class="resource-row">
-          <a class="resource" href="Student-Expense-Tracker.zip" download><span class="resource-icon" aria-hidden="true">↓</span><span><strong>Project source ZIP</strong><small>C files, Makefile, tests, and docs</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
-          <a class="resource" href="docs/project_report.md"><span class="resource-icon" aria-hidden="true">▤</span><span><strong>College project report</strong><small>Submission report in Markdown</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
-          <a class="resource" href="docs/viva_preparation.md"><span class="resource-icon" aria-hidden="true">?</span><span><strong>Viva preparation</strong><small>Project walkthrough and questions</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
+          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/archive/refs/heads/main.zip"><span class="resource-icon" aria-hidden="true">↓</span><span><strong>Project source ZIP</strong><small>C files, Makefile, tests, and docs · repository access required</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
+          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/blob/main/docs/project_report.md" target="_blank" rel="noopener noreferrer"><span class="resource-icon" aria-hidden="true">▤</span><span><strong>College project report</strong><small>Submission report in Markdown</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
+          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/blob/main/docs/viva_preparation.md" target="_blank" rel="noopener noreferrer"><span class="resource-icon" aria-hidden="true">?</span><span><strong>Viva preparation</strong><small>Project walkthrough and questions</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>

@@ -40,6 +40,16 @@ To run the automated checks in isolated temporary directories:
 make test
 ```
 
+## Project webpage
+
+The static project showcase is in `index.html`. To preview it locally from the project folder, run:
+
+```sh
+python3 -m http.server 8000
+```
+
+Then open <http://127.0.0.1:8000>. The source, ZIP, report, and viva links point to the private GitHub repository and require repository access.
+
 ## Terminal appearance
 
 The interface uses plain text by default, so it works in terminals that do not support ANSI colors. To opt into color, set `EXPENSE_TRACKER_COLOR=1` before running. `NO_COLOR` or `TERM=dumb` disables ANSI sequences. Section frames, dashboard labels, aligned expense tables, and status messages remain readable without color.
@@ -70,6 +80,7 @@ Remove the executable and object files with `make clean`. The application create
 | `validation.c/.h` | Bounded line input and numeric/string validation |
 | `date_utils.c/.h` | Date parsing, leap years, comparison, current date |
 | `ui.c/.h` | Menus, dashboard, and formatted transaction output |
+| `index.html` | Responsive project showcase webpage |
 | `Makefile` | Build, run, clean, and test commands |
 | `tests/` | Core assertions and isolated menu-level smoke checks |
 | `docs/` | Synopsis, architecture, algorithms, viva notes, test record |
