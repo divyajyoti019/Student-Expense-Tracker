@@ -1,0 +1,14 @@
+# Build outputs
+*.o
+/expense_tracker
+/tests/test_core
+/tests/test_core.dSYM/
+
+# Runtime data and generated exports
+/data/*.dat
+/data/*.tmp
+/data/*.bak
+/reports/*.txt
+
+# Convenience source archive (GitHub provides source archives itself)
+/Student-Expense-Tracker.zip
