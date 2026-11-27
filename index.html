@@ -3,397 +3,113 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f6f2">
-  <meta name="description" content="Student Expense & Budget Tracker — an offline C11 terminal project for recording expenses, managing monthly budgets, and generating reports.">
-  <title>Student Expense Tracker | CSET333 Project</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --ink: #182621;
-      --muted: #64736d;
-      --paper: #f5f6f2;
-      --surface: #ffffff;
-      --line: #e3e9e3;
-      --green: #176b50;
-      --green-dark: #10553f;
-      --mint: #e6f3eb;
-      --lime: #c9e77b;
-      --orange: #e99c55;
-      --navy: #18372e;
-      --shadow: 0 24px 70px rgba(25, 53, 43, .10);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.55; }
-    a { color: inherit; }
-    .wrap { width: min(1140px, calc(100% - 44px)); margin: 0 auto; }
-
-    .topbar { padding: 20px 0; }
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 760; letter-spacing: -.03em; }
-    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: #fff; background: var(--green); border-radius: 13px; box-shadow: 0 7px 16px rgba(23,107,80,.22); }
-    .brand-mark svg { width: 21px; height: 21px; }
-    .nav-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 14px; }
-    .nav-links a { text-decoration: none; }
-    .nav-links a:hover { color: var(--green); }
-    .nav-cta { padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink) !important; background: #fff; font-weight: 650; }
-
-    .hero { padding: 72px 0 84px; overflow: hidden; }
-    .hero-grid { display: grid; grid-template-columns: 1.03fr .97fr; align-items: center; gap: 68px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--green); font-size: 12px; font-weight: 780; letter-spacing: .12em; text-transform: uppercase; }
-    .eyebrow::before { content: ""; width: 23px; height: 2px; background: var(--orange); border-radius: 99px; }
-    h1 { max-width: 650px; margin: 19px 0 20px; font-size: clamp(42px, 5.6vw, 69px); line-height: 1.02; letter-spacing: -.065em; font-weight: 760; }
-    h1 span { color: var(--green); }
-    .hero-copy { max-width: 540px; color: var(--muted); font-size: 17px; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
-    .button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 0 19px; border-radius: 11px; text-decoration: none; font-size: 14px; font-weight: 720; transition: transform .18s ease, background .18s ease; }
-    .button:hover { transform: translateY(-2px); }
-    .button-primary { color: #fff; background: var(--green); box-shadow: 0 9px 22px rgba(23,107,80,.19); }
-    .button-primary:hover { background: var(--green-dark); }
-    .button-secondary { color: var(--ink); background: #fff; border: 1px solid var(--line); }
-    .button svg { width: 17px; height: 17px; }
-    .trust-line { margin-top: 22px; color: #7a8781; font-size: 12px; }
-
-    .preview-wrap { position: relative; min-width: 0; }
-    .preview-wrap::before { content: ""; position: absolute; width: 400px; height: 400px; top: -75px; right: -108px; border: 1px solid #dfe8dc; border-radius: 50%; box-shadow: 0 0 0 38px rgba(228,239,226,.45), 0 0 0 78px rgba(228,239,226,.28); z-index: -1; }
-    .terminal { overflow: hidden; background: #14241f; border: 1px solid rgba(255,255,255,.1); border-radius: 18px; box-shadow: 0 32px 70px rgba(23,45,37,.24); transform: rotate(1.2deg); }
-    .terminal-bar { height: 47px; display: flex; align-items: center; gap: 7px; padding: 0 16px; background: #1b3029; border-bottom: 1px solid rgba(255,255,255,.08); }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #f0a267; }
-    .dot:nth-child(2) { background: #d4d785; }
-    .dot:nth-child(3) { background: #78b58f; }
-    .terminal-label { margin-left: auto; color: #91a59a; font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .terminal-body { padding: 24px 25px 26px; color: #d9e7de; font: 13px/1.8 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .terminal-title { color: #d6ed9a; font-weight: 750; letter-spacing: .08em; }
-    .terminal-sub { color: #8eaa9b; }
-    .terminal-rule { margin: 12px 0; border-top: 1px solid #385047; }
-    .terminal-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
-    .terminal-option { display: flex; gap: 8px; min-width: 0; }
-    .terminal-option b { width: 21px; flex: 0 0 21px; color: #9bd2a8; font-weight: 600; }
-    .terminal-option span { white-space: nowrap; }
-    .terminal-hint { margin-top: 13px; color: #f0bc85; }
-    .float-note { position: absolute; right: -21px; bottom: -24px; display: flex; align-items: center; gap: 11px; padding: 13px 16px; background: #fff; border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--shadow); font-size: 12px; font-weight: 710; }
-    .float-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: var(--green); background: var(--mint); }
-    .float-icon svg { width: 17px; height: 17px; }
-
-    .facts { padding: 0 0 30px; }
-    .fact-row { display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border: 1px solid var(--line); border-radius: 15px; }
-    .fact { padding: 20px 24px; }
-    .fact + .fact { border-left: 1px solid var(--line); }
-    .fact strong { display: block; font-size: 15px; letter-spacing: -.02em; }
-    .fact span { color: var(--muted); font-size: 12px; }
-
-    section { scroll-margin-top: 24px; }
-    .section { padding: 96px 0; }
-    .section-heading { max-width: 650px; margin-bottom: 39px; }
-    .section-heading h2 { margin: 12px 0; font-size: clamp(31px, 4vw, 46px); line-height: 1.08; letter-spacing: -.05em; }
-    .section-heading p { margin: 0; color: var(--muted); font-size: 16px; }
-    .features { background: #fff; }
-    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .feature-card { min-height: 232px; padding: 24px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
-    .feature-icon { width: 43px; height: 43px; display: grid; place-items: center; margin-bottom: 27px; color: var(--green); background: var(--mint); border-radius: 13px; }
-    .feature-icon svg { width: 21px; height: 21px; }
-    .feature-card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.025em; }
-    .feature-card p { margin: 0; color: var(--muted); font-size: 13px; }
-
-    .insight-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 72px; }
-    .insight-copy h2 { margin: 13px 0 17px; font-size: clamp(32px, 4.4vw, 49px); line-height: 1.08; letter-spacing: -.055em; }
-    .insight-copy p { color: var(--muted); }
-    .check-list { display: grid; gap: 13px; margin: 25px 0 0; padding: 0; list-style: none; color: #34453e; font-size: 14px; }
-    .check-list li { display: flex; align-items: flex-start; gap: 10px; }
-    .check { width: 19px; height: 19px; flex: 0 0 19px; display: grid; place-items: center; margin-top: 1px; border-radius: 50%; color: var(--green); background: var(--mint); font-size: 12px; font-weight: 800; }
-    .dashboard-card { overflow: hidden; padding: 25px; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
-    .dash-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
-    .dash-head strong { font-size: 15px; }
-    .dash-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
-    .month-pill { padding: 7px 10px; background: #f1f5f0; border-radius: 8px; color: #596960; font-size: 11px; }
-    .dash-placeholder { margin-top: 21px; padding: 21px; border: 1px dashed #cbd9cd; border-radius: 12px; background: #f8faf7; }
-    .placeholder-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-    .placeholder-top span { color: var(--muted); font-size: 12px; }
-    .placeholder-value { margin-top: 4px; color: var(--green); font-size: 27px; font-weight: 760; letter-spacing: -.05em; }
-    .placeholder-caption { margin-top: 12px; color: #77867e; font-size: 11px; }
-    .dash-bottom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
-    .dash-stat { padding: 13px; background: #f6f8f5; border-radius: 10px; }
-    .dash-stat span { display: block; color: var(--muted); font-size: 10px; }
-    .dash-stat b { display: block; margin-top: 4px; font-size: 13px; }
-
-    .architecture { color: #e8f1ea; background: var(--navy); }
-    .architecture .eyebrow { color: #c9e77b; }
-    .architecture .section-heading p { color: #b0c1b7; }
-    .module-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255,255,255,.15); border-left: 1px solid rgba(255,255,255,.15); }
-    .module { padding: 20px; border-right: 1px solid rgba(255,255,255,.15); border-bottom: 1px solid rgba(255,255,255,.15); }
-    .module code { color: #d1e89b; font: 700 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
-    .module p { margin: 7px 0 0; color: #b1c2b7; font-size: 12px; }
-    .architecture-note { margin-top: 23px; color: #b9c8be; font-size: 13px; }
-
-    .start { background: #edf3eb; }
-    .start-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 55px; align-items: start; }
-    .start h2 { margin: 12px 0 15px; font-size: clamp(32px, 4vw, 46px); line-height: 1.08; letter-spacing: -.05em; }
-    .start p { color: var(--muted); }
-    .requirements { margin-top: 22px; padding: 14px 16px; color: #42544a; background: rgba(255,255,255,.7); border: 1px solid #dce6d9; border-radius: 11px; font-size: 12px; }
-    .requirements strong { color: var(--ink); }
-    .steps { overflow: hidden; background: #14241f; border: 1px solid #2d463b; border-radius: 15px; box-shadow: var(--shadow); }
-    .steps-title { padding: 17px 21px; color: #dbe9df; border-bottom: 1px solid #31483d; font-size: 13px; font-weight: 700; }
-    .step { display: grid; grid-template-columns: 30px 1fr; gap: 12px; padding: 16px 21px; border-bottom: 1px solid rgba(255,255,255,.07); }
-    .step:last-child { border: 0; }
-    .step-number { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 8px; color: #cce28f; background: #2e483b; font-size: 11px; font-weight: 800; }
-    .step p { margin: 0 0 4px; color: #d6e2d9; font-size: 12px; }
-    .step code { color: #cce28f; font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
-
-    .resources { padding: 81px 0; background: #fff; }
-    .resource-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-    .resource { display: flex; align-items: center; gap: 15px; padding: 18px; text-decoration: none; border: 1px solid var(--line); border-radius: 13px; transition: border .15s ease, transform .15s ease; }
-    .resource:hover { border-color: #9fc6ae; transform: translateY(-2px); }
-    .resource-icon { width: 39px; height: 39px; display: grid; place-items: center; flex: 0 0 39px; color: var(--green); background: var(--mint); border-radius: 11px; font-size: 18px; font-weight: 800; }
-    .resource strong { display: block; font-size: 13px; }
-    .resource small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
-    .resource-arrow { margin-left: auto; color: #819087; font-size: 17px; }
-
-    footer { padding: 26px 0; color: #718078; background: var(--paper); font-size: 11px; }
-    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .footer-brand { color: var(--ink); font-weight: 730; }
-    .footer-note { max-width: 520px; text-align: right; }
-
-    :focus-visible { outline: 3px solid #e99c55; outline-offset: 3px; border-radius: 3px; }
-    @media (max-width: 900px) {
-      .hero-grid { gap: 37px; }
-      .feature-grid { grid-template-columns: repeat(2, 1fr); }
-      .insight-grid { gap: 36px; }
-      .module-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 680px) {
-      .wrap { width: min(100% - 32px, 540px); }
-      .topbar { padding: 14px 0; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .hero { padding: 51px 0 63px; }
-      .hero-grid, .insight-grid, .start-grid { grid-template-columns: 1fr; }
-      .hero-grid { gap: 47px; }
-      .hero-copy { font-size: 15px; }
-      .terminal-body { padding: 18px; font-size: 10px; }
-      .terminal-menu { gap: 3px 10px; }
-      .terminal-option { gap: 5px; }
-      .terminal-option b { width: 18px; flex-basis: 18px; }
-      .float-note { right: -5px; bottom: -27px; }
-      .fact-row { grid-template-columns: repeat(2, 1fr); }
-      .fact { padding: 16px; }
-      .fact:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
-      .fact:nth-child(4) { border-top: 1px solid var(--line); }
-      .section { padding: 69px 0; }
-      .feature-card { min-height: 220px; padding: 19px; }
-      .feature-icon { margin-bottom: 21px; }
-      .insight-grid { gap: 27px; }
-      .dash-bottom { gap: 7px; }
-      .dash-stat { padding: 10px; }
-      .module-grid { grid-template-columns: 1fr 1fr; }
-      .module { padding: 15px 12px; }
-      .start-grid { gap: 25px; }
-      .resource-row { grid-template-columns: 1fr; }
-      .resources { padding: 61px 0; }
-      .footer-row { align-items: flex-start; flex-direction: column; }
-      .footer-note { text-align: left; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { transition-duration: .01ms !important; }
-    }
-  </style>
+  <meta name="theme-color" content="#f5f7f5">
+  <meta name="description" content="A simple student expense and monthly budget tracker that saves data in your browser.">
+  <title>Campus Ledger — Student Expense Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="student-planner.css">
+  <link rel="stylesheet" href="split-expenses.css">
+  <script src="app.js" defer></script>
+  <script src="credit-cards.js" defer></script>
+  <script src="finance-insights.js" defer></script>
+  <script src="student-planner.js" defer></script>
+  <script src="split-expenses.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="Student Expense Tracker home">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/><path d="M16 6h3v3"/></svg>
-        </span>
-        <span>Student Expense Tracker</span>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview" aria-label="Campus Ledger home">
+        <span class="brand-mark" aria-hidden="true">CL</span>
+        <span class="brand-copy"><strong>campus ledger</strong><small>student finances</small></span>
       </a>
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#features">Features</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#run">Run the project</a>
-        <a class="nav-cta" href="https://github.com/divyajyoti019/Student-Expense-Tracker" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
+
+      <div class="side-label">Workspace</div>
+      <nav class="side-nav">
+        <a class="nav-link active" href="#overview" data-nav="overview"><span class="nav-icon">⌂</span>Overview</a>
+        <a class="nav-link" href="#transactions" data-nav="transactions"><span class="nav-icon">↕</span>Transactions</a>
+        <a class="nav-link" href="#student-planner" data-nav="student-planner">Student planner</a>
+        <a class="nav-link" href="#split-expenses" data-nav="split-expenses">Split with friends</a>
+        <a class="nav-link" href="#assistant" data-nav="assistant">Ask Ledger</a>
+        <a class="nav-link" href="#credit-cards" data-nav="credit-cards"><span class="nav-icon">▣</span>Credit cards</a>
+        <a class="nav-link" href="#insights" data-nav="insights"><span class="nav-icon">◔</span>Insights</a>
       </nav>
-    </div>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow">CSET333 · C programming</div>
-          <h1>Know where your student budget <span>goes.</span></h1>
-          <p class="hero-copy">A practical, offline expense and budget tracker built in C. Record everyday spending, keep an eye on monthly limits, and turn saved transactions into useful reports.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="https://github.com/divyajyoti019/Student-Expense-Tracker/archive/refs/heads/main.zip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 16v4h14v-4"/></svg>
-              Download source
-            </a>
-            <a class="button button-secondary" href="#run">How to run <span aria-hidden="true">↓</span></a>
-          </div>
-          <div class="trust-line">C11 · GCC · Local files · No external libraries</div>
-        </div>
-
-        <div class="preview-wrap" aria-label="Preview of the terminal application menu">
-          <div class="terminal">
-            <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-label">expense_tracker</span></div>
-            <div class="terminal-body">
-              <div class="terminal-title">STUDENT EXPENSE &amp; BUDGET TRACKER</div>
-              <div class="terminal-sub">PERSONAL FINANCE MANAGER</div>
-              <div class="terminal-rule"></div>
-              <div class="terminal-menu">
-                <div class="terminal-option"><b>1</b><span>Dashboard</span></div>
-                <div class="terminal-option"><b>2</b><span>Add expense</span></div>
-                <div class="terminal-option"><b>3</b><span>View expenses</span></div>
-                <div class="terminal-option"><b>4</b><span>Search expenses</span></div>
-                <div class="terminal-option"><b>5</b><span>Update expense</span></div>
-                <div class="terminal-option"><b>6</b><span>Delete expense</span></div>
-                <div class="terminal-option"><b>7</b><span>Budgets</span></div>
-                <div class="terminal-option"><b>8</b><span>Reports</span></div>
-                <div class="terminal-option"><b>9</b><span>Sort &amp; filter</span></div>
-                <div class="terminal-option"><b>10</b><span>Categories</span></div>
-                <div class="terminal-option"><b>11</b><span>Export report</span></div>
-                <div class="terminal-option"><b>12</b><span>About</span></div>
-                <div class="terminal-option"><b>13</b><span>Help</span></div>
-                <div class="terminal-option"><b>0</b><span>Exit</span></div>
-              </div>
-              <div class="terminal-hint">Enter your choice:</div>
-            </div>
-          </div>
-          <div class="float-note"><span class="float-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16m-9 4h4"/></svg></span><span>Monthly budgets<br>and calculated reports</span></div>
-        </div>
+      <div class="side-bottom">
+        <div class="privacy-note"><span class="privacy-icon">⌑</span><div><strong>Your data stays here</strong><p>Saved in this browser on this device.</p></div></div>
+        <div class="profile"><span class="avatar">S</span><span><strong>Student</strong><small>Personal account</small></span><span class="profile-dots" aria-hidden="true">···</span></div>
       </div>
-    </section>
+    </aside>
 
-    <div class="facts">
-      <div class="wrap fact-row">
-        <div class="fact"><strong>Made for students</strong><span>Food, travel, rent, study and more</span></div>
-        <div class="fact"><strong>Works offline</strong><span>Your records stay in local files</span></div>
-        <div class="fact"><strong>Built with C11</strong><span>Modular source and standard libraries</span></div>
-        <div class="fact"><strong>INR amounts</strong><span>Indian Rupees, shown as Rs.</span></div>
-      </div>
-    </div>
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong id="breadcrumb-label">Overview</strong></div>
+        <div class="top-actions">
+          <label class="month-picker"><span class="sr-only">Choose month</span><span class="calendar-icon" aria-hidden="true">▦</span><input id="month-picker" type="month"></label>
+          <button class="button button-primary" id="add-expense-top"><span class="plus">+</span> Add expense</button>
+        </div>
+      </header>
 
-    <section class="section features" id="features">
-      <div class="wrap">
-        <div class="section-heading">
-          <div class="eyebrow">A useful project, end to end</div>
-          <h2>Everyday expense tracking, with the C concepts behind it.</h2>
-          <p>The terminal app combines transaction management with practical summaries and persistent local storage.</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-card">
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 8h10M7 12h4m-4 4h7"/></svg></div>
-            <h3>Keep a clear record</h3>
-            <p>Add, view, search, update, and delete transactions. Assign each expense a date, category, amount, and payment type.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18m5-14H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-            <h3>Set a monthly limit</h3>
-            <p>Manage budgets by month and year. See spending, remaining funds, utilization, and alerts based on saved records.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14h16"/><path d="M8 15v-4m4 4V7m4 8v-6m4 6V4"/></svg></div>
-            <h3>Understand patterns</h3>
-            <p>Generate daily, monthly, yearly, category, payment method, budget, and high/low expense reports.</p>
-          </article>
-          <article class="feature-card">
-            <div class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
-            <h3>Keep data locally</h3>
-            <p>Versioned binary files save expenses, budgets, and custom categories between application sessions.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+      <section class="page-heading">
+        <div><p class="eyebrow" id="today-label">YOUR MONEY, IN FOCUS</p><h1>Good day, student <span class="wave" aria-hidden="true">✳</span></h1><p class="muted">Plan your allowance, save for your goals, and split costs with friends.</p></div>
+        <button class="button button-quiet" id="export-csv" title="Download transactions for this month as a CSV"><span aria-hidden="true">↓</span> Export report</button>
+      </section>
 
-    <section class="section">
-      <div class="wrap insight-grid">
-        <div class="insight-copy">
-          <div class="eyebrow">A real summary, from your records</div>
-          <h2>See the month without doing the math by hand.</h2>
-          <p>The dashboard calculates its values from the transactions you enter. It can show lifetime and current-month spending, the selected monthly budget, remaining amount, utilization, transaction counts, and spending highlights.</p>
-          <ul class="check-list">
-            <li><span class="check">✓</span><span>Budget alerts reflect the selected month’s spending.</span></li>
-            <li><span class="check">✓</span><span>Search by ID, date, category, payment method, amount, or description.</span></li>
-            <li><span class="check">✓</span><span>Sort and filter a working copy without changing saved records.</span></li>
-          </ul>
-        </div>
-        <div class="dashboard-card" aria-label="Illustrative dashboard layout; values are populated by the program from user records">
-          <div class="dash-head"><div><strong>Monthly overview</strong><p>Values come from your saved transactions</p></div><span class="month-pill">Month + year</span></div>
-          <div class="dash-placeholder">
-            <div class="placeholder-top"><span>Monthly spending</span><span>Budget utilization</span></div>
-            <div class="placeholder-value">Calculated in the app</div>
-            <div class="placeholder-caption">Add expenses and a monthly budget to see your totals here in the terminal dashboard.</div>
-          </div>
-          <div class="dash-bottom">
-            <div class="dash-stat"><span>Remaining budget</span><b>From your data</b></div>
-            <div class="dash-stat"><span>Transactions</span><b>Counted live</b></div>
-            <div class="dash-stat"><span>Top category</span><b>Calculated</b></div>
-          </div>
-        </div>
-      </div>
-    </section>
+      <section class="summary-grid" aria-label="Monthly summary">
+        <article class="summary-card summary-main"><div class="card-top"><span class="card-label">Spent this month</span><span class="card-icon icon-green" aria-hidden="true">↗</span></div><div class="metric" id="spent-total">₹0</div><div class="card-foot"><span class="dot dot-green"></span><span id="spent-subtitle">No expenses recorded yet</span></div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">Monthly budget</span><button class="text-button" id="edit-budget">Set budget</button></div><div class="metric" id="budget-total">Not set</div><div class="progress-track"><span id="budget-progress"></span></div><div class="card-foot"><span id="budget-caption">Set a budget to track your limit</span></div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">Transactions</span><span class="card-icon icon-lilac" aria-hidden="true">↕</span></div><div class="metric" id="transaction-count">0</div><div class="card-foot"><span id="transaction-subtitle">This month</span></div></article>
+        <article class="summary-card"><div class="card-top"><span class="card-label">Average expense</span><span class="card-icon icon-peach" aria-hidden="true">◎</span></div><div class="metric" id="average-expense">₹0</div><div class="card-foot"><span id="average-subtitle">Per transaction</span></div></article>
+      </section>
 
-    <section class="section architecture" id="architecture">
-      <div class="wrap">
-        <div class="section-heading">
-          <div class="eyebrow">Small, focused C modules</div>
-          <h2>Organized so the code is easier to follow.</h2>
-          <p>Headers share the project’s types and function declarations; each source module owns a clear responsibility.</p>
-        </div>
-        <div class="module-grid">
-          <div class="module"><code>main.c</code><p>Startup, menu dispatch, cleanup</p></div>
-          <div class="module"><code>expense.c</code><p>Transactions, search, sorting, categories</p></div>
-          <div class="module"><code>budget.c</code><p>Monthly budgets and calculations</p></div>
-          <div class="module"><code>reports.c</code><p>Summaries and text export</p></div>
-          <div class="module"><code>storage.c</code><p>Versioned file loading and saving</p></div>
-          <div class="module"><code>validation.c</code><p>Bounded input and conversion checks</p></div>
-          <div class="module"><code>date_utils.c</code><p>Calendar dates, leap years, comparisons</p></div>
-          <div class="module"><code>ui.c</code><p>Menus, dashboard, table presentation</p></div>
-        </div>
-        <p class="architecture-note">The project demonstrates structures, enums, pointers, dynamic arrays, file handling, and a tagged union for optional payment details.</p>
-      </div>
-    </section>
+<section class="panel student-intro"><div><p class="eyebrow">BUILT FOR STUDENT LIFE</p><h2>Make your next month easier.</h2><p>Track today’s expenses. Plan your next laptop, semester fee or trip.</p></div><div class="assistant-prompts"><a class="button button-primary" href="#student-planner">Plan my allowance</a><a class="button button-quiet" href="#split-expenses">Split a bill</a></div></section>
+      <section class="content-grid" id="insights">
+        <article class="panel trend-panel">
+          <div class="panel-heading"><div><h2>Spending trend</h2><p class="muted" id="trend-description">Your daily spending this month</p></div><span class="panel-pill" id="trend-month"></span></div>
+          <div class="chart-wrap"><div class="y-labels" aria-hidden="true"><span id="chart-y-4">₹0</span><span id="chart-y-3">₹0</span><span id="chart-y-2">₹0</span><span id="chart-y-1">₹0</span></div><div class="chart-area"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></div><svg id="trend-chart" viewBox="0 0 700 210" role="img" aria-label="Daily spending trend chart"></svg><div class="x-labels" id="chart-labels" aria-hidden="true"></div></div></div>
+        </article>
 
-    <section class="section start" id="run">
-      <div class="wrap start-grid">
-        <div>
-          <div class="eyebrow">Get it running</div>
-          <h2>Build it in a few commands.</h2>
-          <p>Clone the private GitHub repository, open a terminal in the project folder, then compile and launch the menu-driven C application. You need access to the repository to clone or download its source.</p>
-          <div class="requirements"><strong>Requirements</strong><br>GCC with C11 support and GNU Make (or a compatible toolchain).</div>
-        </div>
-        <div class="steps">
-          <div class="steps-title">macOS / Linux / compatible terminal</div>
-          <div class="step"><span class="step-number">1</span><div><p>Clone the private repository.</p><code>git clone https://github.com/divyajyoti019/Student-Expense-Tracker.git</code></div></div>
-          <div class="step"><span class="step-number">2</span><div><p>Open the project folder.</p><code>cd Student-Expense-Tracker</code></div></div>
-          <div class="step"><span class="step-number">3</span><div><p>Compile the C source files.</p><code>make</code></div></div>
-          <div class="step"><span class="step-number">4</span><div><p>Start the expense tracker.</p><code>make run</code></div></div>
-          <div class="step"><span class="step-number">5</span><div><p>Run the included automated checks when needed.</p><code>make test</code></div></div>
-        </div>
-      </div>
-    </section>
+        <article class="panel category-panel">
+          <div class="panel-heading"><div><h2>By category</h2><p class="muted">Where your money goes</p></div><button class="icon-button" id="category-info" aria-label="About category breakdown" title="Based on expenses in the selected month">i</button></div>
+          <div class="category-content"><div class="donut" id="category-donut"><div class="donut-center"><strong id="donut-total">₹0</strong><span>spent</span></div></div><div class="category-legend" id="category-legend"></div></div>
+        </article>
+      </section>
 
-    <section class="resources" aria-labelledby="resources-title">
-      <div class="wrap">
-        <div class="section-heading">
-          <div class="eyebrow">Project resources</div>
-          <h2 id="resources-title">Continue with the code and documentation.</h2>
-        </div>
-        <div class="resource-row">
-          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/archive/refs/heads/main.zip"><span class="resource-icon" aria-hidden="true">↓</span><span><strong>Project source ZIP</strong><small>C files, Makefile, tests, and docs · repository access required</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
-          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/blob/main/docs/project_report.md" target="_blank" rel="noopener noreferrer"><span class="resource-icon" aria-hidden="true">▤</span><span><strong>College project report</strong><small>Submission report in Markdown</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
-          <a class="resource" href="https://github.com/divyajyoti019/Student-Expense-Tracker/blob/main/docs/viva_preparation.md" target="_blank" rel="noopener noreferrer"><span class="resource-icon" aria-hidden="true">?</span><span><strong>Viva preparation</strong><small>Project walkthrough and questions</small></span><span class="resource-arrow" aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-    </section>
-  </main>
+<section class="panel" id="finance-insights"></section>
+      <section class="panel transactions-panel" id="transactions">
+        <div class="panel-heading transactions-heading"><div><h2>Recent transactions</h2><p class="muted" id="transactions-caption">Your latest spending, all in one place</p></div><div class="table-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search expenses" autocomplete="off"><span class="sr-only">Search expenses</span></label><select id="sort-order" aria-label="Sort transactions"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="highest">Highest amount</option><option value="lowest">Lowest amount</option></select><select id="category-filter" aria-label="Filter by category"><option value="all">All categories</option></select></div></div>
+        <div class="table-scroll"><table><thead><tr><th scope="col">Description</th><th scope="col">Category</th><th scope="col">Date</th><th scope="col">Payment</th><th scope="col" class="amount-column">Amount</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody id="transaction-rows"></tbody></table><div class="empty-state" id="empty-state"><span class="empty-icon">＋</span><strong id="empty-title">Your ledger starts here</strong><p id="empty-copy">Add your first expense to see it in your dashboard.</p><button class="button button-primary button-small" id="empty-add">Add an expense</button></div></div>
+        <div class="table-footer"><span id="rows-count">0 transactions</span><span>Amounts shown in Indian rupees</span></div>
+      </section>
 
-  <footer>
-    <div class="wrap footer-row">
-      <div><span class="footer-brand">Student Expense &amp; Budget Tracker</span><br>CSET333 · C Programming · C11</div>
-      <div class="footer-note">An offline educational project. It stores data locally and does not connect to a bank or provide financial security features.</div>
-    </div>
-  </footer>
+  <section class="panel budget-editor" id="budget-dialog" aria-labelledby="budget-dialog-title">
+    <form id="budget-form" ><div class="modal-header"><div><p class="eyebrow">MONTHLY PLAN</p><h2 id="budget-dialog-title">Set your budget</h2><p class="muted" id="budget-month-label">Choose an amount to plan around.</p></div></div><label class="field">Monthly budget (₹)<div class="input-prefix input-prefix-large"><span>₹</span><input id="budget-amount" type="number" min="0" max="1000000000" step="0.01" required placeholder="e.g. 15000"></div></label><p class="form-error" id="budget-error" role="alert" hidden></p><div class="modal-actions"><button class="button button-primary" type="submit">Save budget</button></div></form>
+  </section>
+<section class="panel" id="student-planner"></section>
+<section class="panel" id="split-expenses"></section>
+<section class="panel credit-panel" id="credit-cards"></section>
+<section class="panel assistant-panel" id="assistant">
+ <h2>Spending assistant</h2><p class="muted">Explainable suggestions from your own records. Works locally without an AI subscription.</p>
+ <div class="assistant-prompts"><button class="button button-quiet" data-question="budget">Budget status</button><button class="button button-quiet" data-question="allowance and goals">Allowance & goals</button><button class="button button-quiet" data-question="shared expenses">Shared expenses</button><button class="button button-quiet" data-question="forecast">Month forecast</button><button class="button button-quiet" data-question="save">How can I save?</button><button class="button button-quiet" data-question="category">Top categories</button><button class="button button-quiet" data-question="credit card dues">Card payments</button></div>
+ <div id="assistant-reply" role="status" aria-live="polite">Choose a question or ask about your budget, spending or savings.</div>
+ <form id="assistant-form" class="assistant-input"><label class="sr-only" for="assistant-question">Ask a spending question</label><input id="assistant-question" required maxlength="300" placeholder="How much can I spend each day?"><button class="button button-primary">Ask</button></form>
+</section>
+<section class="panel backup-panel"><h2>Backup your ledger</h2><p class="muted">Download expenses and budgets. Planner, shared bills and credit cards each have their own backup controls. Restore replaces the expense ledger after confirmation.</p><button class="button button-quiet" id="download-backup">Download backup</button> <label class="button button-quiet">Restore backup<input type="file" id="restore-backup" accept=".json,application/json" hidden></label><p id="backup-status" role="status"></p></section>
+      <footer class="app-footer"><span>Campus Ledger</span><span><span class="footer-dot"></span> Offline and private · Stored in this browser</span></footer>
+    </main>
+  </div>
+
+  <dialog class="modal" id="expense-dialog" aria-labelledby="expense-dialog-title">
+    <form id="expense-form" method="dialog">
+      <div class="modal-header"><div><p class="eyebrow">TRANSACTION</p><h2 id="expense-dialog-title">Add an expense</h2><p class="muted">A quick note now makes budgeting easier later.</p></div><button class="close-button" type="button" data-close="expense-dialog" aria-label="Close dialog">×</button></div>
+      <input type="hidden" id="expense-id">
+      <div class="form-grid"><label class="field field-wide">Description<input id="expense-description" name="description" required maxlength="90" placeholder="e.g. Lunch at campus cafe"></label><label class="field">Amount (₹)<div class="input-prefix"><span>₹</span><input id="expense-amount" name="amount" type="number" min="0.01" max="1000000000" step="0.01" required placeholder="0.00"></div></label><label class="field">Date<input id="expense-date" name="date" type="date" required></label><label class="field">Category<select id="expense-category" name="category" required></select></label><label class="field">Payment method<select id="expense-payment" name="payment"><option>UPI</option><option>Cash</option><option>Card</option></select></label></div>
+      <p class="form-error" id="form-error" role="alert" hidden></p><div class="modal-actions"><button class="button button-quiet" type="button" data-close="expense-dialog">Cancel</button><button class="button button-primary" type="submit" id="save-expense">Save expense</button></div>
+    </form>
+  </dialog>
+
+
+
+  <dialog class="confirm-dialog" id="delete-dialog" aria-labelledby="delete-title"><form method="dialog"><button class="close-button confirm-close" value="cancel" aria-label="Cancel">×</button><span class="delete-icon">⌫</span><h2 id="delete-title">Delete this expense?</h2><p>This transaction will be removed from your browser data.</p><div class="modal-actions"><button class="button button-quiet" value="cancel">Keep it</button><button class="button button-danger" id="confirm-delete" value="delete">Delete expense</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

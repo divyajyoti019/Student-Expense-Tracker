@@ -12,3 +12,7 @@
 
 # Convenience source archive (GitHub provides source archives itself)
 /Student-Expense-Tracker.zip
+
+# Local Finder metadata and the extracted submission copy
+.DS_Store
+/submission/Student-Expense-Tracker/

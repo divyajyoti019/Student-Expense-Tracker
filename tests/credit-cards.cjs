@@ -1,0 +1,28 @@
+const assert = require('node:assert/strict');
+const { cents, dateOK, balance, due, minimum, valid, undoLast } = require('../credit-cards.js');
+let passed = 0;
+function check(label, body) { body(); passed++; console.log('PASS ' + label); }
+const card = () => ({id:'student-card',name:'Student card',last4:'1234',limit:1000000,opening:200000,statement:150000,minimum:10000,statementSeq:0,statementDate:'2024-01-01',dueDate:'2024-01-30',entries:[]});
+const entry = (seq,type,amount,date='2024-01-10') => ({seq,type,amount,date,note:''});
+check('Currency input preserves paise',()=>assert.equal(cents('120.50'),12050));
+check('Excess decimal precision rejected',()=>assert.throws(()=>cents('1.001')));
+check('Negative amount rejected',()=>assert.throws(()=>cents('-1')));
+check('Calendar validation handles leap years',()=>{assert.equal(dateOK('2024-02-29'),true);assert.equal(dateOK('2025-02-29'),false);});
+check('Opening card balance validated',()=>assert.equal(valid([card()]).length,1));
+check('Purchases increase outstanding without changing current statement',()=>{const c=card();c.entries.push(entry(1,'charge',20050));assert.equal(balance(c),220050);assert.equal(due(c),150000);});
+check('Partial payment reduces both outstanding and statement due',()=>{const c=card();c.entries.push(entry(1,'payment',50000));assert.equal(balance(c),150000);assert.equal(due(c),100000);assert.equal(minimum(c),0);});
+check('Minimum remains when payment is too small',()=>{const c=card();c.entries.push(entry(1,'payment',2500));assert.equal(minimum(c),7500);});
+check('New statement excludes payments already included in snapshot',()=>{const c=card();c.entries.push(entry(1,'payment',50000));c.statementSeq=1;c.statement=150000;assert.equal(due(c),150000);valid([c]);});
+check('Full payment settles outstanding and statement',()=>{const c=card();c.entries.push(entry(1,'payment',200000));assert.equal(balance(c),0);assert.equal(due(c),0);valid([c]);});
+check('Overpayment rejected during restore',()=>{const c=card();c.entries.push(entry(1,'payment',200001));assert.throws(()=>valid([c]));});
+check('Out-of-range accumulated outstanding rejected',()=>{const c=card();c.opening=1e11;c.entries.push(entry(1,'charge',1));assert.throws(()=>valid([c]));});
+check('Statement cannot exceed balance at its snapshot',()=>{const c=card();c.entries.push(entry(1,'payment',100000));c.statementSeq=1;assert.throws(()=>valid([c]));});
+check('Missing statement checkpoint rejected',()=>{const c=card();c.statementSeq=1;assert.throws(()=>valid([c]));});
+check('Full card number rejected as last four',()=>assert.throws(()=>valid([{...card(),last4:'1234567890123456'}])));
+check('Duplicate card identifiers rejected',()=>assert.throws(()=>valid([card(),card()])));
+check('Future statement dates rejected',()=>assert.throws(()=>valid([{...card(),statementDate:'9999-01-01',dueDate:'9999-02-01'}])));
+check('Activity after snapshot cannot predate statement',()=>{const c=card();c.entries.push(entry(1,'charge',100,'2023-12-31'));assert.throws(()=>valid([c]));});
+check('Undo last payment restores balances without mutating original',()=>{const c=card();c.entries.push(entry(1,'payment',50000));const next=undoLast(c);assert.equal(balance(next),200000);assert.equal(due(next),150000);assert.equal(c.entries.length,1);});
+check('Undo cannot cross current statement snapshot',()=>{const c=card();c.entries.push(entry(1,'payment',50000));c.statementSeq=1;c.statement=150000;assert.throws(()=>undoLast(c));});
+check('Undo empty history is rejected',()=>assert.throws(()=>undoLast(card())));
+console.log(`${passed} credit-card checks passed.`);
